@@ -1,0 +1,46 @@
+:where(html) {
+  /* FONT FAMILY */
+  --font-sans: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell,
+    Noto Sans, sans-serif;
+  --font-serif: ui-serif, serif;
+  --font-mono: Dank Mono, Operator Mono, Inconsolata, Fira Mono, ui-monospace,
+    SF Mono, Monaco, Droid Sans Mono, Source Code Pro, monospace;
+
+  /* FONT WEIGHT */
+  --font-light: 300;
+  --font-regular: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extrabold: 800;
+  --font-black: 900;
+
+  /* FONT SIZE */
+  --font-xs: 0.75rem;
+  --font-sm: 0.875rem;
+  --font-base: 1rem;
+  --font-lg: 1.125rem;
+  --font-xl: 1.25rem;
+  --font-2xl: 1.5rem;
+  --font-3xl: 1.875rem;
+  --font-4xl: 2.25rem;
+  --font-5xl: 3rem;
+  --font-6xl: 3.5rem;
+
+  /* LINEHEiGHT */
+  --leading-xs: 0.95;
+  --leading-sm: 1.1;
+  --leading-md: 1.25;
+  --leading-lg: 1.375;
+  --leading-xl: 1.5;
+
+  /* LETTERSPACING */
+  --letterspacing-0: -0.05em;
+  --letterspacing-1: 0.025em;
+  --letterspacing-2: 0.05em;
+  --letterspacing-3: 0.075em;
+  --letterspacing-4: 0.15em;
+  --letterspacing-5: 0.5em;
+  --letterspacing-6: 0.75em;
+  --letterspacing-7: 1em;
+}

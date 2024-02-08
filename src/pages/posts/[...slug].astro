@@ -1,0 +1,48 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Video from "@components/Video";
+import { UL, OL } from "@components/content";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const blogEntries = await getCollection("posts");
+  return blogEntries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const date = entry.data.pubDate.toLocaleDateString("en-us", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+
+const components = { ul: UL, ol: OL, Video };
+---
+
+<BaseLayout>
+  <article class="prose mx-auto px-app py-xl">
+    <header>
+      <a href="/posts"><span>←</span> All Posts</a>
+      <section>
+        <h1>{entry.data.title}</h1>
+        <p>{entry.data.description}</p>
+        <div class="metadata">
+          <time>
+            {date}
+          </time>
+          <ul role="list">
+            {entry.data.tags.map((tag) => <li>{tag}</li>)}
+          </ul>
+        </div>
+      </section>
+    </header>
+    <hr />
+    <main>
+      <Content components={components} />
+    </main>
+  </article>
+</BaseLayout>

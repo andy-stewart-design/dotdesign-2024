@@ -1,0 +1,16 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const allPosts = await getCollection("posts");
+---
+
+<BaseLayout>
+  <main style="display: grid;">
+    {
+      allPosts.map((post) => (
+        <a href={`/posts/${post.slug}`}>{post.data.title}</a>
+      ))
+    }
+  </main>
+</BaseLayout>

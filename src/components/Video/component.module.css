@@ -1,0 +1,122 @@
+.wrapper {
+  --input-height: 1.5rem;
+
+  position: relative;
+}
+
+.play {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  padding-inline: 20px;
+  padding-block: 16px;
+
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+  color: white;
+  font-variant-numeric: tabular-nums;
+
+  background: rgb(0 0 0 / 0.6);
+  border: 1px solid rgb(255 255 255 / 0.333);
+  border-radius: 100vmax;
+  backdrop-filter: blur(4px);
+  box-shadow:
+    0 -1px 3px 0 rgb(0 0 0 / 2%),
+    0 1px 2px -5px rgb(0 0 0 / 3%),
+    0 2px 5px -5px rgb(0 0 0 / 5%),
+    0 4px 12px -5px rgb(0 0 0 / 6%),
+    0 12px 15px -5px rgb(0 0 0 / 8%);
+
+  cursor: pointer;
+  opacity: var(--opacity);
+  transition: opacity 150ms ease-out;
+
+  .wrapper:hover &,
+  video:focus-visible + &,
+  &:is(:hover, :focus-visible) {
+    opacity: 1;
+  }
+}
+
+.progress {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  margin: 0;
+  height: var(--input-height);
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+
+  cursor: pointer;
+  opacity: var(--opacity);
+  transition: opacity 150ms ease-out;
+
+  &::-webkit-slider-runnable-track {
+    height: var(--input-height);
+    background: linear-gradient(
+      to right,
+      var(--neutral-50) 0%,
+      var(--neutral-50) var(--progress),
+      rgb(0 0 0 / 0.5) var(--progress)
+    );
+    transform-origin: top center;
+    scale: 1 0.166667;
+    transition: scale 150ms ease-out;
+    transition-delay: 200ms;
+  }
+
+  &::-moz-range-track {
+    height: var(--input-height);
+    background: linear-gradient(
+      to right,
+      var(--neutral-50) 0%,
+      var(--neutral-50) var(--progress),
+      transparent var(--progress)
+    );
+    transform-origin: top center;
+    scale: 1 0.25;
+    transition: scale 150ms ease-out;
+    transition-delay: 200ms;
+  }
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: var(--input-height);
+    width: var(--input-height);
+    background-color: transparent;
+  }
+
+  &::-moz-range-thumb {
+    height: var(--input-height);
+    width: var(--input-height);
+    background-color: transparent;
+  }
+
+  &:hover {
+    &::-webkit-slider-runnable-track {
+      scale: 1 0.666667;
+    }
+  }
+
+  &:focus-visible {
+    &::-webkit-slider-runnable-track {
+      scale: 1 1;
+    }
+  }
+
+  .wrapper:hover &,
+  video:focus-visible ~ &,
+  &:is(:hover, :focus-visible) {
+    opacity: 1;
+  }
+}

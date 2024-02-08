@@ -1,0 +1,18 @@
+---
+const links = [
+  { text: "Home", href: "/" },
+  { text: "About", href: "/about" },
+  { text: "Posts", href: "/posts" },
+];
+---
+
+<nav>
+  {links.map(({ text, href }) => <a {href}>{text}</a>)}
+</nav>
+
+<style>
+  nav {
+    display: flex;
+    gap: 16px;
+  }
+</style>

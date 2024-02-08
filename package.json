@@ -1,0 +1,27 @@
+{
+  "name": "dotdesign-2024",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.4.1",
+    "@astrojs/mdx": "^2.1.1",
+    "@astrojs/solid-js": "^4.0.1",
+    "@astrojs/svelte": "^5.0.3",
+    "@astrojs/vercel": "^7.0.2",
+    "astro": "^4.2.7",
+    "solid-js": "^1.8.14",
+    "svelte": "4.2.10",
+    "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "lightningcss": "^1.23.0",
+    "prettier-plugin-astro": "^0.13.0"
+  }
+}

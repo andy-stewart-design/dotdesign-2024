@@ -1,0 +1,81 @@
+:where(html) {
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+
+  --px-app: var(--space-md);
+
+  @media (--screen-sm) {
+    --px-app: var(--space-xl);
+  }
+
+  .p-xs {
+    padding: var(--space-xs);
+  }
+
+  .p-sm {
+    padding: var(--space-sm);
+  }
+
+  .p-md {
+    padding: var(--space-md);
+  }
+
+  .p-lg {
+    padding: var(--space-lg);
+  }
+
+  .p-xl {
+    padding: var(--space-xl);
+  }
+
+  .px-xs {
+    padding-inline: var(--space-xs);
+  }
+
+  .px-sm {
+    padding-inline: var(--space-sm);
+  }
+
+  .px-md {
+    padding-inline: var(--space-md);
+  }
+
+  .px-lg {
+    padding-inline: var(--space-lg);
+  }
+
+  .px-xl {
+    padding-inline: var(--space-xl);
+  }
+
+  .px-app {
+    padding-inline: var(--px-app);
+  }
+
+  .py-xs {
+    padding-block: var(--space-xs);
+  }
+
+  .py-sm {
+    padding-block: var(--space-sm);
+  }
+
+  .py-md {
+    padding-block: var(--space-md);
+  }
+
+  .py-lg {
+    padding-block: var(--space-lg);
+  }
+
+  .py-xl {
+    padding-block: var(--space-xl);
+  }
+
+  .mx-auto {
+    margin-inline: auto;
+  }
+}
