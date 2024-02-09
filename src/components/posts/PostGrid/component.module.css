@@ -1,5 +1,6 @@
 .grid {
   flex-grow: 1;
+
   display: grid;
   grid-auto-rows: min-content;
   gap: 1rem;
