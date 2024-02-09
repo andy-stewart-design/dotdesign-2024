@@ -1,20 +1,20 @@
 import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
 import vercel from "@astrojs/vercel/serverless";
-import { Features } from "lightningcss";
-import svelte from "@astrojs/svelte";
-
 import solidJs from "@astrojs/solid-js";
+import AutoImport from "astro-auto-import";
+import { Features } from "lightningcss";
 
-// https://astro.build/config
 export default defineConfig({
   integrations: [
+    AutoImport({
+      imports: ["./src/components/Video/Video.tsx"],
+    }),
     mdx({
       optimize: {
         customComponentNames: ["video"],
       },
     }),
-    svelte(),
     solidJs(),
   ],
   vite: {

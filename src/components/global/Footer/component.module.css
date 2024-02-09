@@ -1,0 +1,23 @@
+.footer {
+  section {
+    padding-inline: var(--px-app);
+    max-width: 72ch;
+    margin-inline: auto;
+
+    ul {
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: center;
+      gap: var(--space-lg);
+      padding-block: var(--space-xl);
+    }
+
+    a {
+      text-decoration: none;
+
+      span {
+        color: var(--color-primary);
+      }
+    }
+  }
+}

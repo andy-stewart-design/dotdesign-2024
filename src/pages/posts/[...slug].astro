@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
-import Video from "@components/Video";
-import { UL, OL } from "@components/content";
+import { AlertBar, Footer } from "@components/global";
+import { UL, OL, PostHero } from "@components/posts";
 import { getCollection } from "astro:content";
 
 export async function getStaticPaths() {
@@ -14,35 +14,18 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await entry.render();
-const date = entry.data.pubDate.toLocaleDateString("en-us", {
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-});
 
-const components = { ul: UL, ol: OL, Video };
+const components = { ul: UL, ol: OL };
 ---
 
 <BaseLayout>
+  <AlertBar />
   <article class="prose mx-auto px-app py-xl">
-    <header>
-      <a href="/posts"><span>←</span> All Posts</a>
-      <section>
-        <h1>{entry.data.title}</h1>
-        <p>{entry.data.description}</p>
-        <div class="metadata">
-          <time>
-            {date}
-          </time>
-          <ul role="list">
-            {entry.data.tags.map((tag) => <li>{tag}</li>)}
-          </ul>
-        </div>
-      </section>
-    </header>
+    <PostHero entry={entry.data} />
     <hr />
     <main>
       <Content components={components} />
     </main>
   </article>
+  <Footer />
 </BaseLayout>

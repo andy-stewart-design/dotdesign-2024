@@ -2,6 +2,17 @@
   --background: var(--neutral-950);
   --foreground: var(--neutral-50);
 
+  --color-primary: var(--red-300);
+  --color-primary-light: var(--red-200);
+
+  --text-default: var(--neutral-50);
+  --text-subdued: var(--neutral-300);
+  --text-subtle: var(--neutral-500);
+
+  --border-default: var(--neutral-50);
+  --border-subdued: var(--neutral-700);
+  --border-subtle: var(--neutral-850);
+
   background: var(--background);
   color: var(--foreground);
 }

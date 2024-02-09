@@ -108,16 +108,18 @@ export default function Video(props: PropTypes) {
     <div class={classes.wrapper} style={{ "--progress": `${progress()}%` }}>
       <video
         ref={video}
-        onDurationChange={handleDurationChange}
-        onTimeUpdate={handleTimeUpdate}
         autoplay={merged.autoplay}
         muted={merged.muted}
         loop={isLooping()}
+        poster={merged.poster}
+        onDurationChange={handleDurationChange}
+        onTimeUpdate={handleTimeUpdate}
         onClick={handleClick}
         onKeyDown={handleVideoKeyDown}
         tabIndex={0}
         width={merged.width}
         height={merged.height}
+        class={classes.video}
       >
         <source src={merged.src} />
       </video>

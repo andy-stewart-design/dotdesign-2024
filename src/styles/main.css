@@ -4,7 +4,9 @@
 @import "./reset/reset.css" layer(reset);
 
 @import "./system/colors.css" layer(system);
+@import "./system/ease.css" layer(system);
 @import "./system/typography.css" layer(system);
+@import "./system/shadows.css" layer(system);
 
 @import "./theme/color.css" layer(theme);
 @import "./theme/typography.css" layer(theme);
