@@ -1,4 +1,4 @@
-import { e as createAstro, f as createComponent, r as renderTemplate, i as addAttribute, j as renderHead, k as renderSlot, l as renderComponent, m as maybeRenderHead } from '../astro_hhgSLpR9.mjs';
+import { e as createAstro, f as createComponent, r as renderTemplate, i as addAttribute, j as renderHead, k as renderSlot, l as renderComponent, m as maybeRenderHead } from '../astro_mqwpKSix.mjs';
 /* empty css                          */
 
 const $$Astro$1 = createAstro();

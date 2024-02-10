@@ -1,9 +1,9 @@
 import { renderers } from './renderers.mjs';
-import { l as levels, g as getEventPrefix, L as Logger, A as AstroIntegrationLogger, manifest } from './manifest_K00feNv5.mjs';
+import { l as levels, g as getEventPrefix, L as Logger, A as AstroIntegrationLogger, manifest } from './manifest_2O7LYDkV.mjs';
 import 'node:fs';
-import { t as trimSlashes, e as appendForwardSlash, j as joinPaths, s as slash$1, p as prependForwardSlash, r as removeTrailingForwardSlash, f as collapseDuplicateSlashes } from './chunks/astro/assets-service_KpMLE24Y.mjs';
-import { A as AstroError, R as ResponseSentError, t as MiddlewareNoDataOrNextCalled, v as MiddlewareNotAResponse, G as GetStaticPathsRequired, w as InvalidGetStaticPathsReturn, x as InvalidGetStaticPathsEntry, y as GetStaticPathsExpectedParams, z as GetStaticPathsInvalidRouteParam, P as PageNumberParamNotFound, N as NoMatchingStaticPathFound, B as PrerenderDynamicEndpointPathCollide, C as LocalsNotAnObject, D as ROUTE_DATA_SYMBOL, F as ASTRO_VERSION, H as ClientAddressNotAvailable, S as StaticClientAddressNotAvailable, J as renderEndpoint, K as ReservedSlotName, O as renderSlotToString, Q as renderJSX, T as chunkToString, V as CantRenderPage, W as renderPage$1, X as REROUTE_DIRECTIVE_HEADER, Y as commonjsGlobal } from './chunks/astro_hhgSLpR9.mjs';
-import { s as sequence, o as onRequest } from './chunks/_astro-internal_middleware_-zo-sOEK.mjs';
+import { t as trimSlashes, e as appendForwardSlash, j as joinPaths, s as slash$1, p as prependForwardSlash, r as removeTrailingForwardSlash, f as collapseDuplicateSlashes } from './chunks/astro/assets-service_wXhyviyn.mjs';
+import { A as AstroError, R as ResponseSentError, t as MiddlewareNoDataOrNextCalled, v as MiddlewareNotAResponse, G as GetStaticPathsRequired, w as InvalidGetStaticPathsReturn, x as InvalidGetStaticPathsEntry, y as GetStaticPathsExpectedParams, z as GetStaticPathsInvalidRouteParam, P as PageNumberParamNotFound, N as NoMatchingStaticPathFound, B as PrerenderDynamicEndpointPathCollide, C as LocalsNotAnObject, D as ROUTE_DATA_SYMBOL, F as ASTRO_VERSION, H as ClientAddressNotAvailable, S as StaticClientAddressNotAvailable, J as renderEndpoint, K as ReservedSlotName, O as renderSlotToString, Q as renderJSX, T as chunkToString, V as CantRenderPage, W as renderPage$1, X as REROUTE_DIRECTIVE_HEADER, Y as commonjsGlobal } from './chunks/astro_mqwpKSix.mjs';
+import { s as sequence, o as onRequest } from './chunks/_astro-internal_middleware_hBfHt_Qh.mjs';
 import buffer from 'node:buffer';
 import crypto from 'node:crypto';
 import require$$1 from 'os';
@@ -546,6 +546,7 @@ function shouldAppendForwardSlash(trailingSlash, buildFormat) {
       switch (buildFormat) {
         case "directory":
           return true;
+        case "preserve":
         case "file":
           return false;
       }
@@ -1075,20 +1076,29 @@ function computeCurrentLocale(request, locales, routingStrategy, defaultLocale) 
   if (!routeData) {
     return defaultLocale;
   }
-  for (const segment of routeData.route.split("/")) {
+  const pathname = routeData.pathname ?? new URL(request.url).pathname;
+  for (const segment of pathname.split("/").filter(Boolean)) {
     for (const locale of locales) {
       if (typeof locale === "string") {
+        if (!segment.includes(locale))
+          continue;
         if (normalizeTheLocale(locale) === normalizeTheLocale(segment)) {
           return locale;
         }
       } else {
         if (locale.path === segment) {
           return locale.codes.at(0);
+        } else {
+          for (const code of locale.codes) {
+            if (normalizeTheLocale(code) === normalizeTheLocale(segment)) {
+              return code;
+            }
+          }
         }
       }
     }
   }
-  if (routingStrategy === "pathname-prefix-other-locales") {
+  if (routingStrategy === "pathname-prefix-other-locales" || routingStrategy === "domains-prefix-other-locales") {
     return defaultLocale;
   }
   return void 0;
@@ -1235,51 +1245,107 @@ function pathnameHasLocale(pathname, locales) {
 function createI18nMiddleware(i18n, base, trailingSlash, buildFormat) {
   if (!i18n)
     return (_, next) => next();
+  const prefixAlways = (url, response, context) => {
+    if (url.pathname === base + "/" || url.pathname === base) {
+      if (shouldAppendForwardSlash(trailingSlash, buildFormat)) {
+        return context.redirect(`${appendForwardSlash(joinPaths(base, i18n.defaultLocale))}`);
+      } else {
+        return context.redirect(`${joinPaths(base, i18n.defaultLocale)}`);
+      }
+    } else if (!pathnameHasLocale(url.pathname, i18n.locales)) {
+      return new Response(null, {
+        status: 404,
+        headers: response.headers
+      });
+    }
+    return void 0;
+  };
+  const prefixOtherLocales = (url, response) => {
+    let pathnameContainsDefaultLocale = false;
+    for (const segment of url.pathname.split("/")) {
+      if (normalizeTheLocale(segment) === normalizeTheLocale(i18n.defaultLocale)) {
+        pathnameContainsDefaultLocale = true;
+        break;
+      }
+    }
+    if (pathnameContainsDefaultLocale) {
+      const newLocation = url.pathname.replace(`/${i18n.defaultLocale}`, "");
+      response.headers.set("Location", newLocation);
+      return new Response(null, {
+        status: 404,
+        headers: response.headers
+      });
+    }
+    return void 0;
+  };
+  const prefixAlwaysNoRedirect = (url, response) => {
+    const isRoot = url.pathname === base + "/" || url.pathname === base;
+    if (!(isRoot || pathnameHasLocale(url.pathname, i18n.locales))) {
+      return new Response(null, {
+        status: 404,
+        headers: response.headers
+      });
+    }
+    return void 0;
+  };
   return async (context, next) => {
     const routeData = Reflect.get(context.request, routeDataSymbol);
     if (routeData?.type !== "page" && routeData?.type !== "fallback") {
       return await next();
     }
+    const currentLocale = context.currentLocale;
     const url = context.url;
     const { locales, defaultLocale, fallback, routing } = i18n;
     const response = await next();
     if (response instanceof Response) {
-      const pathnameContainsDefaultLocale = url.pathname.includes(`/${defaultLocale}`);
       switch (i18n.routing) {
+        case "domains-prefix-other-locales": {
+          if (localeHasntDomain(i18n, currentLocale)) {
+            const result = prefixOtherLocales(url, response);
+            if (result) {
+              return result;
+            }
+          }
+          break;
+        }
         case "pathname-prefix-other-locales": {
-          if (pathnameContainsDefaultLocale) {
-            const newLocation = url.pathname.replace(`/${defaultLocale}`, "");
-            response.headers.set("Location", newLocation);
-            return new Response(null, {
-              status: 404,
-              headers: response.headers
-            });
+          const result = prefixOtherLocales(url, response);
+          if (result) {
+            return result;
+          }
+          break;
+        }
+        case "domains-prefix-other-no-redirect": {
+          if (localeHasntDomain(i18n, currentLocale)) {
+            const result = prefixAlwaysNoRedirect(url, response);
+            if (result) {
+              return result;
+            }
           }
           break;
         }
         case "pathname-prefix-always-no-redirect": {
-          const isRoot = url.pathname === base + "/" || url.pathname === base;
-          if (!(isRoot || pathnameHasLocale(url.pathname, i18n.locales))) {
-            return new Response(null, {
-              status: 404,
-              headers: response.headers
-            });
+          const result = prefixAlwaysNoRedirect(url, response);
+          if (result) {
+            return result;
           }
           break;
         }
         case "pathname-prefix-always": {
-          if (url.pathname === base + "/" || url.pathname === base) {
-            if (shouldAppendForwardSlash(trailingSlash, buildFormat)) {
-              return context.redirect(`${appendForwardSlash(joinPaths(base, i18n.defaultLocale))}`);
-            } else {
-              return context.redirect(`${joinPaths(base, i18n.defaultLocale)}`);
-            }
-          } else if (!pathnameHasLocale(url.pathname, i18n.locales)) {
-            return new Response(null, {
-              status: 404,
-              headers: response.headers
-            });
+          const result = prefixAlways(url, response, context);
+          if (result) {
+            return result;
           }
+          break;
+        }
+        case "domains-prefix-always": {
+          if (localeHasntDomain(i18n, currentLocale)) {
+            const result = prefixAlways(url, response, context);
+            if (result) {
+              return result;
+            }
+          }
+          break;
         }
       }
       if (response.status >= 300 && fallback) {
@@ -1316,6 +1382,14 @@ function createI18nMiddleware(i18n, base, trailingSlash, buildFormat) {
 const i18nPipelineHook = (ctx) => {
   Reflect.set(ctx.request, routeDataSymbol, ctx.route);
 };
+function localeHasntDomain(i18n, currentLocale) {
+  for (const domainLocale of Object.values(i18n.domainLookupTable)) {
+    if (domainLocale === currentLocale) {
+      return false;
+    }
+  }
+  return true;
+}
 
 const consoleLogDestination = {
   write(event) {
@@ -1838,11 +1912,61 @@ class App {
     const url = new URL(request.url);
     if (this.#manifest.assets.has(url.pathname))
       return void 0;
-    const pathname = prependForwardSlash(this.removeBase(url.pathname));
-    const routeData = matchRoute(pathname, this.#manifestData);
+    let pathname = this.#computePathnameFromDomain(request);
+    if (!pathname) {
+      pathname = prependForwardSlash(this.removeBase(url.pathname));
+    }
+    let routeData = matchRoute(pathname, this.#manifestData);
     if (!routeData || routeData.prerender)
       return void 0;
     return routeData;
+  }
+  #computePathnameFromDomain(request) {
+    let pathname = void 0;
+    const url = new URL(request.url);
+    if (this.#manifest.i18n && (this.#manifest.i18n.routing === "domains-prefix-always" || this.#manifest.i18n.routing === "domains-prefix-other-locales" || this.#manifest.i18n.routing === "domains-prefix-other-no-redirect")) {
+      let host = request.headers.get("X-Forwarded-Host");
+      let protocol = request.headers.get("X-Forwarded-Proto");
+      if (protocol) {
+        protocol = protocol + ":";
+      } else {
+        protocol = url.protocol;
+      }
+      if (!host) {
+        host = request.headers.get("Host");
+      }
+      if (host && protocol) {
+        host = host.split(":")[0];
+        try {
+          let locale;
+          const hostAsUrl = new URL(`${protocol}//${host}`);
+          for (const [domainKey, localeValue] of Object.entries(
+            this.#manifest.i18n.domainLookupTable
+          )) {
+            const domainKeyAsUrl = new URL(domainKey);
+            if (hostAsUrl.host === domainKeyAsUrl.host && hostAsUrl.protocol === domainKeyAsUrl.protocol) {
+              locale = localeValue;
+              break;
+            }
+          }
+          if (locale) {
+            pathname = prependForwardSlash(
+              joinPaths(normalizeTheLocale(locale), this.removeBase(url.pathname))
+            );
+            if (url.pathname.endsWith("/")) {
+              pathname = appendForwardSlash(pathname);
+            }
+          }
+        } catch (e) {
+          this.#logger.error(
+            "router",
+            `Astro tried to parse ${protocol}//${host} as an URL, but it threw a parsing error. Check the X-Forwarded-Host and X-Forwarded-Proto headers.`
+          );
+          this.#logger.error("router", `Error: ${e}`);
+        }
+      }
+    }
+    return pathname;
   }
   async render(request, routeDataOrOptions, maybeLocals) {
     let routeData;
@@ -2227,27 +2351,27 @@ class NodeApp extends App {
   static async writeResponse(source, destination) {
     const { status, headers, body } = source;
     destination.writeHead(status, createOutgoingHttpHeaders(headers));
-    if (body) {
-      try {
-        const reader = body.getReader();
-        destination.on("close", () => {
-          reader.cancel().catch((err) => {
-            console.error(
-              `There was an uncaught error in the middle of the stream while rendering ${destination.req.url}.`,
-              err
-            );
-          });
+    if (!body)
+      return destination.end();
+    try {
+      const reader = body.getReader();
+      destination.on("close", () => {
+        reader.cancel().catch((err) => {
+          console.error(
+            `There was an uncaught error in the middle of the stream while rendering ${destination.req.url}.`,
+            err
+          );
         });
-        let result = await reader.read();
-        while (!result.done) {
-          destination.write(result.value);
-          result = await reader.read();
-        }
-      } catch {
-        destination.write("Internal server error");
+      });
+      let result = await reader.read();
+      while (!result.done) {
+        destination.write(result.value);
+        result = await reader.read();
       }
+      destination.end();
+    } catch {
+      destination.end("Internal server error");
     }
-    destination.end();
   }
 }
 function makeRequestHeaders(req) {
@@ -9005,33 +9129,46 @@ function assertPatternsInput(input) {
 nodePath.posix.join;
 
 const ASTRO_PATH_HEADER = "x-astro-path";
+const ASTRO_PATH_PARAM = "x_astro_path";
 const ASTRO_LOCALS_HEADER = "x-astro-locals";
+const ASTRO_MIDDLEWARE_SECRET_HEADER = "x-astro-middleware-secret";
 
 apply();
-const createExports = (manifest) => {
+const createExports = (manifest, { middlewareSecret }) => {
   const app = new NodeApp(manifest);
   const handler = async (req, res) => {
+    const url = new URL(`https://example.com${req.url}`);
     const clientAddress = req.headers["x-forwarded-for"];
     const localsHeader = req.headers[ASTRO_LOCALS_HEADER];
-    const realPath = req.headers[ASTRO_PATH_HEADER];
+    const middlewareSecretHeader = req.headers[ASTRO_MIDDLEWARE_SECRET_HEADER];
+    const realPath = req.headers[ASTRO_PATH_HEADER] ?? url.searchParams.get(ASTRO_PATH_PARAM);
     if (typeof realPath === "string") {
       req.url = realPath;
     }
-    const locals = typeof localsHeader === "string" ? JSON.parse(localsHeader) : Array.isArray(localsHeader) ? JSON.parse(localsHeader[0]) : {};
+    let locals = {};
+    if (localsHeader) {
+      if (middlewareSecretHeader !== middlewareSecret) {
+        res.statusCode = 403;
+        res.end("Forbidden");
+        return;
+      }
+      locals = typeof localsHeader === "string" ? JSON.parse(localsHeader) : JSON.parse(localsHeader[0]);
+    }
+    delete req.headers[ASTRO_MIDDLEWARE_SECRET_HEADER];
     const webResponse = await app.render(req, { addCookieHeader: true, clientAddress, locals });
     await NodeApp.writeResponse(webResponse, res);
   };
   return { default: handler };
 };
 
-const _page0 = () => import('./chunks/generic_k7PKqoS4.mjs');
-const _page1 = () => import('./chunks/index_R7bouZ-B.mjs');
-const _page2 = () => import('./chunks/_.._9sshrWjN.mjs');
-const _page3 = () => import('./chunks/test_GQzDljE5.mjs');
-const _page4 = () => import('./chunks/index_RKZbELYF.mjs');
-const _page5 = () => import('./chunks/index_FJW0mxFl.mjs');
+const _page0 = () => import('./chunks/generic__d6ttFXI.mjs');
+const _page1 = () => import('./chunks/index_TuBgaxTm.mjs');
+const _page2 = () => import('./chunks/_.._Fsmoznzl.mjs');
+const _page3 = () => import('./chunks/test_NQ_2IIo6.mjs');
+const _page4 = () => import('./chunks/index_J8ujAVb5.mjs');
+const _page5 = () => import('./chunks/index_mcHyzv4F.mjs');
 const pageMap = new Map([
-    ["node_modules/.pnpm/astro@4.2.7_lightningcss@1.23.0_typescript@5.3.3/node_modules/astro/dist/assets/endpoint/generic.js", _page0],
+    ["node_modules/.pnpm/astro@4.3.5_lightningcss@1.23.0_typescript@5.3.3/node_modules/astro/dist/assets/endpoint/generic.js", _page0],
     ["src/pages/posts/index.astro", _page1],
     ["src/pages/posts/[...slug].astro", _page2],
     ["src/pages/work/test.astro", _page3],
@@ -9044,7 +9181,10 @@ const _manifest = Object.assign(manifest, {
     renderers,
     middleware: onRequest
 });
-const _exports = createExports(_manifest);
+const _args = {
+    "middlewareSecret": "61c41bac-e4a0-4507-8c03-9f07e0c2a8c5"
+};
+const _exports = createExports(_manifest, _args);
 const __astrojsSsrVirtualEntry = _exports.default;
 
 export { __astrojsSsrVirtualEntry as default, pageMap };

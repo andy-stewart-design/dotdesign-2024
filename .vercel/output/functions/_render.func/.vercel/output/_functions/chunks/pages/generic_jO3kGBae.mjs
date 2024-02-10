@@ -1,5 +1,5 @@
-import { i as isESMImportedImage, a as isLocalService, b as isRemoteImage, D as DEFAULT_HASH_PROPS, c as isRemotePath, d as isRemoteAllowed } from '../astro/assets-service_KpMLE24Y.mjs';
-import { g as getDefaultExportFromCjs, A as AstroError, c as InvalidImageService, d as ExpectedImageOptions, E as ExpectedImage, e as createAstro, f as createComponent, h as ImageMissingAlt, r as renderTemplate, m as maybeRenderHead, i as addAttribute, s as spreadAttributes } from '../astro_hhgSLpR9.mjs';
+import { i as isESMImportedImage, a as isLocalService, b as isRemoteImage, D as DEFAULT_HASH_PROPS, c as isRemotePath, d as isRemoteAllowed } from '../astro/assets-service_wXhyviyn.mjs';
+import { g as getDefaultExportFromCjs, A as AstroError, c as InvalidImageService, d as ExpectedImageOptions, E as ExpectedImage, e as createAstro, f as createComponent, h as ImageMissingAlt, r as renderTemplate, m as maybeRenderHead, i as addAttribute, s as spreadAttributes } from '../astro_mqwpKSix.mjs';
 
 /**
  * @param typeMap [Object] Map of MIME type -> Array[extensions]
@@ -108,7 +108,7 @@ async function getConfiguredImageService() {
   if (!globalThis?.astroAsset?.imageService) {
     const { default: service } = await import(
       // @ts-expect-error
-      '../astro/assets-service_KpMLE24Y.mjs'
+      '../astro/assets-service_wXhyviyn.mjs'
     ).then(n => n.g).catch((e) => {
       const error = new AstroError(InvalidImageService);
       error.cause = e;
@@ -227,7 +227,7 @@ const $$Image = createComponent(async ($$result, $$props, $$slots) => {
     additionalAttributes.srcset = image.srcSet.attribute;
   }
   return renderTemplate`${maybeRenderHead()}<img${addAttribute(image.src, "src")}${spreadAttributes(additionalAttributes)}${spreadAttributes(image.attributes)}>`;
-}, "/Users/andy/Documents/Dev/dotdesign-2024/node_modules/.pnpm/astro@4.2.7_lightningcss@1.23.0_typescript@5.3.3/node_modules/astro/components/Image.astro", void 0);
+}, "/Users/andy/Documents/Dev/dotdesign-2024/node_modules/.pnpm/astro@4.3.5_lightningcss@1.23.0_typescript@5.3.3/node_modules/astro/components/Image.astro", void 0);
 
 const $$Astro = createAstro();
 const $$Picture = createComponent(async ($$result, $$props, $$slots) => {
@@ -256,18 +256,18 @@ const $$Picture = createComponent(async ($$result, $$props, $$slots) => {
     densities: props.densities
   });
   const imgAdditionalAttributes = {};
-  const sourceAdditionaAttributes = {};
+  const sourceAdditionalAttributes = {};
   if (props.sizes) {
-    sourceAdditionaAttributes.sizes = props.sizes;
+    sourceAdditionalAttributes.sizes = props.sizes;
   }
   if (fallbackImage.srcSet.values.length > 0) {
     imgAdditionalAttributes.srcset = fallbackImage.srcSet.attribute;
   }
   return renderTemplate`${maybeRenderHead()}<picture${spreadAttributes(pictureAttributes)}> ${Object.entries(optimizedImages).map(([_, image]) => {
     const srcsetAttribute = props.densities || !props.densities && !props.widths ? `${image.src}${image.srcSet.values.length > 0 ? ", " + image.srcSet.attribute : ""}` : image.srcSet.attribute;
-    return renderTemplate`<source${addAttribute(srcsetAttribute, "srcset")}${addAttribute("image/" + image.options.format, "type")}${spreadAttributes(sourceAdditionaAttributes)}>`;
+    return renderTemplate`<source${addAttribute(srcsetAttribute, "srcset")}${addAttribute("image/" + image.options.format, "type")}${spreadAttributes(sourceAdditionalAttributes)}>`;
   })} <img${addAttribute(fallbackImage.src, "src")}${spreadAttributes(imgAdditionalAttributes)}${spreadAttributes(fallbackImage.attributes)}> </picture>`;
-}, "/Users/andy/Documents/Dev/dotdesign-2024/node_modules/.pnpm/astro@4.2.7_lightningcss@1.23.0_typescript@5.3.3/node_modules/astro/components/Picture.astro", void 0);
+}, "/Users/andy/Documents/Dev/dotdesign-2024/node_modules/.pnpm/astro@4.3.5_lightningcss@1.23.0_typescript@5.3.3/node_modules/astro/components/Picture.astro", void 0);
 
 const imageConfig = {"service":{"entrypoint":"astro/assets/services/sharp","config":{}},"domains":[],"remotePatterns":[]};
 					new URL("file:///Users/andy/Documents/Dev/dotdesign-2024/.vercel/output/static/");

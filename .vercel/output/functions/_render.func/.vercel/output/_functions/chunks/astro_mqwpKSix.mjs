@@ -108,7 +108,7 @@ ${validRenderersCount > 0 ? `There ${plural ? "are" : "is"} ${validRenderersCoun
 but ${plural ? "none were" : "it was not"} able to server-side render \`${componentName}\`.` : `No valid renderer was found ${componentExtension ? `for the \`.${componentExtension}\` file extension.` : `for this file extension.`}`}`,
   hint: (probableRenderers) => `Did you mean to enable the ${probableRenderers} integration?
 
-See https://docs.astro.build/en/core-concepts/framework-components/ for more information on how to install and configure integrations.`
+See https://docs.astro.build/en/guides/framework-components/ for more information on how to install and configure integrations.`
 };
 const NoClientEntrypoint = {
   name: "NoClientEntrypoint",
@@ -150,7 +150,7 @@ const GetStaticPathsRequired = {
   name: "GetStaticPathsRequired",
   title: "`getStaticPaths()` function required for dynamic routes.",
   message: "`getStaticPaths()` function is required for dynamic routes. Make sure that you `export` a `getStaticPaths` function from your dynamic route.",
-  hint: `See https://docs.astro.build/en/core-concepts/routing/#dynamic-routes for more information on dynamic routes.
+  hint: `See https://docs.astro.build/en/guides/routing/#dynamic-routes for more information on dynamic routes.
 
 Alternatively, set \`output: "server"\` or \`output: "hybrid"\` in your Astro config file to switch to a non-static server build. This error can also occur if using \`export const prerender = true;\`.
 See https://docs.astro.build/en/guides/server-side-rendering/ for more information on non-static rendering.`
@@ -212,7 +212,7 @@ const PrerenderDynamicEndpointPathCollide = {
   name: "PrerenderDynamicEndpointPathCollide",
   title: "Prerendered dynamic endpoint has path collision.",
   message: (pathname) => `Could not render \`${pathname}\` with an \`undefined\` param as the generated path will collide during prerendering. Prevent passing \`undefined\` as \`params\` for the endpoint's \`getStaticPaths()\` function, or add an additional extension to the endpoint's filename.`,
-  hint: (filename) => `Rename \`${filename}\` to \`${filename.replace(/\.(js|ts)/, (m) => `.json` + m)}\``
+  hint: (filename) => `Rename \`${filename}\` to \`${filename.replace(/\.(?:js|ts)/, (m) => `.json` + m)}\``
 };
 const ExpectedImage = {
   name: "ExpectedImage",
@@ -325,7 +325,7 @@ function createComponent(arg1, moduleId, propagation) {
   }
 }
 
-const ASTRO_VERSION = "4.2.7";
+const ASTRO_VERSION = "4.3.5";
 const ROUTE_DATA_SYMBOL = "astro.routeData";
 
 function createAstroGlobFn() {
@@ -407,7 +407,9 @@ Found handlers: ${Object.keys(mod).map((exp) => JSON.stringify(exp)).join(", ")}
     return new Response(null, { status: 404 });
   }
   const response = await handler.call(mod, context);
-  response.headers.set(REROUTE_DIRECTIVE_HEADER, "no");
+  if (response.status === 404 || response.status === 500) {
+    response.headers.set(REROUTE_DIRECTIVE_HEADER, "no");
+  }
   return response;
 }
 
@@ -878,12 +880,12 @@ function getPrescripts(result, type, directive) {
 }
 
 const voidElementNames = /^(area|base|br|col|command|embed|hr|img|input|keygen|link|meta|param|source|track|wbr)$/i;
-const htmlBooleanAttributes = /^(allowfullscreen|async|autofocus|autoplay|controls|default|defer|disabled|disablepictureinpicture|disableremoteplayback|formnovalidate|hidden|loop|nomodule|novalidate|open|playsinline|readonly|required|reversed|scoped|seamless|itemscope)$/i;
-const htmlEnumAttributes = /^(contenteditable|draggable|spellcheck|value)$/i;
-const svgEnumAttributes = /^(autoReverse|externalResourcesRequired|focusable|preserveAlpha)$/i;
+const htmlBooleanAttributes = /^(?:allowfullscreen|async|autofocus|autoplay|controls|default|defer|disabled|disablepictureinpicture|disableremoteplayback|formnovalidate|hidden|loop|nomodule|novalidate|open|playsinline|readonly|required|reversed|scoped|seamless|itemscope)$/i;
+const htmlEnumAttributes = /^(?:contenteditable|draggable|spellcheck|value)$/i;
+const svgEnumAttributes = /^(?:autoReverse|externalResourcesRequired|focusable|preserveAlpha)$/i;
 const STATIC_DIRECTIVES = /* @__PURE__ */ new Set(["set:html", "set:text"]);
-const toIdent = (k) => k.trim().replace(/(?:(?!^)\b\w|\s+|[^\w]+)/g, (match, index) => {
-  if (/[^\w]|\s/.test(match))
+const toIdent = (k) => k.trim().replace(/(?!^)\b\w|\s+|\W+/g, (match, index) => {
+  if (/\W/.test(match))
     return "";
   return index === 0 ? match : match.toUpperCase();
 });
@@ -1479,8 +1481,8 @@ function isFragmentComponent(Component) {
 function isHTMLComponent(Component) {
   return Component && Component["astro:html"] === true;
 }
-const ASTRO_SLOT_EXP = /\<\/?astro-slot\b[^>]*>/g;
-const ASTRO_STATIC_SLOT_EXP = /\<\/?astro-static-slot\b[^>]*>/g;
+const ASTRO_SLOT_EXP = /<\/?astro-slot\b[^>]*>/g;
+const ASTRO_STATIC_SLOT_EXP = /<\/?astro-static-slot\b[^>]*>/g;
 function removeStaticAstroSlot(html, supportsAstroStaticSlot) {
   const exp = supportsAstroStaticSlot ? ASTRO_STATIC_SLOT_EXP : ASTRO_SLOT_EXP;
   return html.replace(exp, "");
@@ -1737,7 +1739,7 @@ ${serializeProps(
   };
 }
 function sanitizeElementName(tag) {
-  const unsafe = /[&<>'"\s]+/g;
+  const unsafe = /[&<>'"\s]+/;
   if (!unsafe.test(tag))
     return tag;
   return tag.trim().split(unsafe)[0].trim();
