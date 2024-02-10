@@ -1,5 +1,5 @@
 import { generateHydrationScript, renderToStringAsync, renderToString, ssr, createComponent, Suspense, NoHydration } from 'solid-js/web';
-import { Z as AstroJSX, A as AstroError, Q as renderJSX, _ as createVNode } from './chunks/astro_hhgSLpR9.mjs';
+import { Z as AstroJSX, A as AstroError, Q as renderJSX, _ as createVNode } from './chunks/astro_UrTtDdCc.mjs';
 
 const contexts = /* @__PURE__ */ new WeakMap();
 function getContext(result) {
