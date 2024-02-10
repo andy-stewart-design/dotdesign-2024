@@ -1,4 +1,4 @@
-import './astro_EhEhwq7z.mjs';
+import './astro_hhgSLpR9.mjs';
 
 function sequence(...handlers) {
   const filtered = handlers.filter((h) => !!h);
@@ -30,7 +30,11 @@ function defineMiddleware(fn) {
 }
 
 const onRequest$1 = defineMiddleware((context, next) => {
-  return next();
+  const slug = context.url.pathname.replace(/\/$/gm, "").split("/").at(-1);
+  if (slug === "")
+    return Response.redirect(new URL("/posts", context.url), 302);
+  else
+    return next();
 });
 
 const onRequest = sequence(
