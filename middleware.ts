@@ -1,7 +1,9 @@
-export default function middleware(request: any) {
+export default function middleware(request: Request) {
+  const url = new URL(request.url);
   return new Response(
     JSON.stringify({
-      message: request.url.pathname,
+      url: request.url,
+      path: url.pathname,
     }),
     {
       status: 200,
