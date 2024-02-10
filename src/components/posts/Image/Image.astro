@@ -10,8 +10,7 @@ interface Props {
 const { alt, src } = Astro.props;
 const { width, height } = Astro.props.src;
 
-const optimized = await getImage({ src, width: 800, format: "webp" });
-console.log(optimized);
+const optimized = await getImage({ src, width: 1200, format: "webp" });
 ---
 
 <img src={optimized.src} alt={alt} width={width} height={height} />
