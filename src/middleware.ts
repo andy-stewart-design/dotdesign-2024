@@ -4,6 +4,8 @@ import { defineMiddleware } from "astro/middleware";
 // const BASE_URL = "https://dotdesign-2024.vercel.app";
 
 export const onRequest = defineMiddleware((context, next) => {
+  console.log(next);
+
   //   if (context.url.pathname === INDEX_PATH) {
   //     // return Response.redirect(new URL("/redirected", context.url), 302);
   //     return new Response(
