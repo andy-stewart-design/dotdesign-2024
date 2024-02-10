@@ -1,5 +1,5 @@
-import { i as isESMImportedImage, a as isLocalService, b as isRemoteImage, D as DEFAULT_HASH_PROPS, c as isRemotePath, d as isRemoteAllowed } from '../astro/assets-service_NO9Vu9Yb.mjs';
-import { g as getDefaultExportFromCjs, A as AstroError, c as InvalidImageService, d as ExpectedImageOptions, E as ExpectedImage, e as createAstro, f as createComponent, h as ImageMissingAlt, r as renderTemplate, m as maybeRenderHead, i as addAttribute, s as spreadAttributes } from '../astro_WclbTpDe.mjs';
+import { i as isESMImportedImage, a as isLocalService, b as isRemoteImage, D as DEFAULT_HASH_PROPS, c as isRemotePath, d as isRemoteAllowed } from '../astro/assets-service_wXhyviyn.mjs';
+import { g as getDefaultExportFromCjs, A as AstroError, c as InvalidImageService, d as ExpectedImageOptions, E as ExpectedImage, e as createAstro, f as createComponent, h as ImageMissingAlt, r as renderTemplate, m as maybeRenderHead, i as addAttribute, s as spreadAttributes } from '../astro_mqwpKSix.mjs';
 
 /**
  * @param typeMap [Object] Map of MIME type -> Array[extensions]
@@ -108,7 +108,7 @@ async function getConfiguredImageService() {
   if (!globalThis?.astroAsset?.imageService) {
     const { default: service } = await import(
       // @ts-expect-error
-      '../astro/assets-service_NO9Vu9Yb.mjs'
+      '../astro/assets-service_wXhyviyn.mjs'
     ).then(n => n.g).catch((e) => {
       const error = new AstroError(InvalidImageService);
       error.cause = e;
