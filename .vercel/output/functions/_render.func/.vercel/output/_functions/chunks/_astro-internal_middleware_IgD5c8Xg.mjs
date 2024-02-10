@@ -30,11 +30,7 @@ function defineMiddleware(fn) {
 }
 
 const onRequest$1 = defineMiddleware((context, next) => {
-  const slug = context.url.pathname.replace(/\/$/gm, "").split("/").at(-1);
-  if (slug === "")
-    return Response.redirect(new URL("/posts", context.url), 302);
-  else
-    return next();
+  return next();
 });
 
 const onRequest = sequence(

@@ -2,6 +2,13 @@
 	"version": 3,
 	"routes": [
 		{
+			"src": "/",
+			"headers": {
+				"Location": "/posts"
+			},
+			"status": 301
+		},
+		{
 			"src": "^/_astro/(.*)$",
 			"headers": {
 				"cache-control": "public, max-age=31536000, immutable"
@@ -17,6 +24,10 @@
 		},
 		{
 			"src": "^\\/work\\/test\\/?$",
+			"dest": "_render"
+		},
+		{
+			"src": "^\\/$",
 			"dest": "_render"
 		}
 	]
