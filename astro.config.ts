@@ -28,9 +28,6 @@ export default defineConfig({
       },
     },
   },
-  redirects: {
-    "/": "/posts",
-  },
   output: "hybrid",
   adapter: vercel(),
 });
