@@ -16,23 +16,7 @@
 			"dest": "_render"
 		},
 		{
-			"src": "^\\/posts\\/?$",
-			"dest": "_render"
-		},
-		{
-			"src": "^\\/posts(?:\\/(.*?))?\\/?$",
-			"dest": "_render"
-		},
-		{
 			"src": "^\\/work\\/test\\/?$",
-			"dest": "_render"
-		},
-		{
-			"src": "^\\/$",
-			"dest": "_render"
-		},
-		{
-			"src": "^\\/about\\/?$",
 			"dest": "_render"
 		}
 	]
