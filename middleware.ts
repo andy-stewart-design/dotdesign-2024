@@ -1,7 +1,7 @@
 export default function middleware(request: any) {
   return new Response(
     JSON.stringify({
-      message: request,
+      message: request.url,
     }),
     {
       status: 200,
