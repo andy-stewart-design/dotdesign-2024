@@ -1,6 +1,7 @@
 .alert {
-  background: var(--color-primary);
-  color: var(--neutral-900);
+  background: var(--black);
+  color: oklch(85% 0.16 76);
+  border-bottom: 1px solid var(--border-subtle);
   padding-inline: var(--px-app);
   padding-block: var(--space-xs);
 
@@ -10,7 +11,6 @@
   }
 
   b {
-    font-weight: var(--font-semibold);
-    color: var(--black);
+    font-weight: var(--font-medium);
   }
 }
