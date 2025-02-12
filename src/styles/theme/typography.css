@@ -1,5 +1,7 @@
 h1,
 .font-4xl {
+  font-family: var(--font-mono);
+  font-weight: 200;
   font-size: var(--font-4xl);
 }
 

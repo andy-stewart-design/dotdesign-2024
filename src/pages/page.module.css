@@ -1,0 +1,48 @@
+.section {
+  padding: 0.75rem 1rem;
+  background: #060709;
+  min-height: 100vh;
+
+  @media (width > 880px) {
+    padding: 1.5rem 2rem;
+  }
+}
+
+.headline {
+  display: grid;
+  gap: 0.75em;
+  line-height: 1.4;
+  font-weight: 250;
+  font-size: var(--font-2xl);
+  max-width: 47ch;
+  color: #aaa;
+  text-wrap: pretty;
+  margin-bottom: 0.75em;
+
+  .highlight {
+    font-weight: 500;
+    color: #fff;
+  }
+
+  @media (width > 640px) {
+    font-size: var(--font-3xl);
+  }
+
+  @media (width > 880px) {
+    font-size: var(--font-4xl);
+  }
+}
+
+.links {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0;
+
+  li {
+    list-style: none;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}

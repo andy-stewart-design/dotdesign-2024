@@ -1,7 +1,21 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import s from './page.module.css'
 ---
 
 <BaseLayout>
-  <h1>My Astro Site</h1>
+  <section class={s.section}>
+    <h1 class={s.headline}><span><span class={s.highlight}>Hello, internet friend</span>, my name’s Andy. I use design and code to help bring life to brands through compelling experiences and clear interfaces.</span><span>Currently, I work as a <span class={s.highlight}>Staff Design Technologist at ebay</span> and live in Brooklyn.</span><span>I enjoy exploring the <span class={s.highlight}>intersection of creativity and technology</span>. My work combines interaction design, animation, and front-end development to shape the look, feel, and behavior of digital products.</span></h1></h1>
+    <ul class={s.links}>
+      <li>
+        <a href="/">Codepen</a>
+      </li>
+      <li>
+        <a href="/">Bluesky</a>
+      </li>
+      <li>
+        <a href="/">Linkedin</a>
+      </li>
+    </ul>
+  </section>
 </BaseLayout>
